@@ -12,6 +12,10 @@ interface UserProfile {
   school: string;
   grade: number;
   imageUrl: string;
+  team?: {
+    name: string;
+    role: string;
+  };
 }
 
 const DUMMY_PROFILE: UserProfile = {
@@ -19,6 +23,10 @@ const DUMMY_PROFILE: UserProfile = {
   school: "대구소프트웨어마이스터고등학교",
   grade: 2,
   imageUrl: "https://picsum.photos/200",
+  team: {
+    name: "달리기 크루",
+    role: "팀원"
+  }
 };
 
 export default function ProfileScreen() {
@@ -33,6 +41,11 @@ export default function ProfileScreen() {
   const handleSettings = () => {
     // 설정 페이지로 이동
     // router.push('/profile/settings');
+  };
+
+  const handleJoinTeam = () => {
+    // 팀 가입 페이지로 이동
+    // router.push('/team/join');
   };
 
   return (
@@ -93,6 +106,30 @@ export default function ProfileScreen() {
               <Text style={[styles.value, { color: colors.text.primary }]}>
                 {DUMMY_PROFILE.grade}학년
               </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={[styles.label, { color: colors.text.secondary }]}>
+                팀
+              </Text>
+              {DUMMY_PROFILE.team ? (
+                <View style={styles.teamInfo}>
+                  <Text style={[styles.value, { color: colors.text.primary }]}>
+                    {DUMMY_PROFILE.team.name}
+                  </Text>
+                  <Text style={[styles.teamRole, { color: colors.text.secondary }]}>
+                    ({DUMMY_PROFILE.team.role})
+                  </Text>
+                </View>
+              ) : (
+                <TouchableOpacity
+                  onPress={handleJoinTeam}
+                  style={[styles.joinButton, { backgroundColor: colors.primary }]}
+                >
+                  <Text style={[styles.joinButtonText, { color: colors.text.inverse }]}>
+                    팀 가입하기
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>
@@ -164,5 +201,22 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     fontWeight: '500',
+  },
+  teamInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  teamRole: {
+    fontSize: 14,
+  },
+  joinButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  joinButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 }); 
