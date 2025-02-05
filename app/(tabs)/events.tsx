@@ -1,44 +1,61 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { Text } from '@/components/Themed';
 import { useColorScheme } from 'react-native';
 import { getThemeColors } from '@/assets/theme/colors';
 import SafeContainer from '@/components/common/SafeContainer';
-import { Search } from 'lucide-react-native';
+import { Trophy } from 'lucide-react-native';
 
 interface Event {
   id: string;
   title: string;
   description: string;
-  date: string;
-  location: string;
+  goal: string;
+  reward: string;
+  endDate: string;
   type: 'school' | 'other';
   imageUrl: string;
   participants: number;
+  progress?: number; // 진행률 (0-100)
 }
 
 const DUMMY_EVENTS: Event[] = [
   {
     id: '1',
-    title: '교내 마라톤 대회',
-    description: '2024 봄맞이 교내 마라톤 대회',
-    date: '2024-04-15T09:00:00.000Z',
-    location: '대구대학교 운동장',
+    title: '2024 연간 달리기 챌린지',
+    description: '1년 동안 1,000km 달성하고 상품 받아가세요!',
+    goal: '1,000km 달성',
+    reward: '문화상품권 5만원',
+    endDate: '2024-12-31T23:59:59.000Z',
     type: 'school',
     imageUrl: 'https://picsum.photos/300',
     participants: 150,
+    progress: 45,
   },
   {
     id: '2',
-    title: '대구시 달리기 대회',
-    description: '제 5회 대구시 달리기 대회',
-    date: '2024-05-01T08:00:00.000Z',
-    location: '대구 스타디움',
+    title: '봄맞이 30일 러닝',
+    description: '30일 연속 5km 이상 달리기',
+    goal: '30일 연속 5km',
+    reward: '스타벅스 기프티콘',
+    endDate: '2024-04-30T23:59:59.000Z',
     type: 'other',
     imageUrl: 'https://picsum.photos/200',
     participants: 500,
+    progress: 70,
   },
-  // ... 더 많은 더미 데이터
+  {
+    id: '3',
+    title: '교내 단체 달리기',
+    description: '친구들과 함께 달리기 누적거리 도전',
+    goal: '팀당 500km 달성',
+    reward: '체육복 지원',
+    endDate: '2024-06-30T23:59:59.000Z',
+    type: 'school',
+    imageUrl: 'https://picsum.photos/250',
+    participants: 300,
+    progress: 25,
+  },
 ];
 
 type FilterType = 'all' | 'school' | 'other';
@@ -46,15 +63,11 @@ type FilterType = 'all' | 'school' | 'other';
 export default function EventsScreen() {
   const colorScheme = useColorScheme();
   const colors = getThemeColors(colorScheme === 'dark');
-  const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [events, setEvents] = useState<Event[]>(DUMMY_EVENTS);
 
   const filteredEvents = events.filter(event => {
-    const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         event.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = activeFilter === 'all' || event.type === activeFilter;
-    return matchesSearch && matchesFilter;
+    return activeFilter === 'all' || event.type === activeFilter;
   });
 
   const formatDate = (dateString: string): string => {
@@ -63,24 +76,11 @@ export default function EventsScreen() {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      weekday: 'long',
     });
   };
 
   return (
     <SafeContainer>
-      {/* 검색바 */}
-      <View style={[styles.searchContainer, { backgroundColor: colors.cardBackground }]}>
-        <Search size={20} color={colors.text.secondary} />
-        <TextInput
-          style={[styles.searchInput, { color: colors.text.primary }]}
-          placeholder="이벤트 검색"
-          placeholderTextColor={colors.text.secondary}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
-
       {/* 필터 버튼 */}
       <View style={styles.filterContainer}>
         <TouchableOpacity
@@ -140,6 +140,19 @@ export default function EventsScreen() {
                 style={styles.eventImage}
                 defaultSource={{ uri: "https://picsum.photos/200" }}
               />
+              {event.progress !== undefined && (
+                <View style={[styles.progressBar, { backgroundColor: colors.progress.background }]}>
+                  <View 
+                    style={[
+                      styles.progressFill, 
+                      { 
+                        backgroundColor: colors.progress.fill,
+                        width: `${event.progress}%` 
+                      }
+                    ]} 
+                  />
+                </View>
+              )}
             </View>
             <View style={styles.eventContent}>
               <Text style={[styles.eventTitle, { color: colors.text.primary }]}>
@@ -148,15 +161,27 @@ export default function EventsScreen() {
               <Text style={[styles.eventDescription, { color: colors.text.secondary }]}>
                 {event.description}
               </Text>
-              <Text style={[styles.eventDate, { color: colors.text.secondary }]}>
-                {formatDate(event.date)}
-              </Text>
-              <Text style={[styles.eventLocation, { color: colors.text.secondary }]}>
-                📍 {event.location}
-              </Text>
-              <Text style={[styles.eventParticipants, { color: colors.text.secondary }]}>
-                👥 {event.participants}명 참가
-              </Text>
+              <View style={styles.eventDetails}>
+                <View style={styles.detailRow}>
+                  <Trophy size={16} color={colors.text.secondary} />
+                  <Text style={[styles.detailText, { color: colors.text.secondary }]}>
+                    목표: {event.goal}
+                  </Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={[styles.detailText, { color: colors.text.secondary }]}>
+                    보상: {event.reward}
+                  </Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={[styles.detailText, { color: colors.text.secondary }]}>
+                    마감일: {formatDate(event.endDate)}
+                  </Text>
+                </View>
+                <Text style={[styles.eventParticipants, { color: colors.text.secondary }]}>
+                  👥 {event.participants}명 참여중
+                </Text>
+              </View>
             </View>
           </TouchableOpacity>
         ))}
@@ -166,20 +191,6 @@ export default function EventsScreen() {
 }
 
 const styles = StyleSheet.create({
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    marginHorizontal: 16,
-    marginTop: 16,
-    borderRadius: 10,
-    gap: 10,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    padding: 8,
-  },
   filterContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -217,11 +228,22 @@ const styles = StyleSheet.create({
   },
   eventImageContainer: {
     height: 150,
+    position: 'relative',
   },
   eventImage: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  progressBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 4,
+  },
+  progressFill: {
+    height: '100%',
   },
   eventContent: {
     padding: 16,
@@ -233,17 +255,21 @@ const styles = StyleSheet.create({
   },
   eventDescription: {
     fontSize: 14,
-    marginBottom: 8,
+    marginBottom: 12,
   },
-  eventDate: {
-    fontSize: 14,
-    marginBottom: 4,
+  eventDetails: {
+    gap: 8,
   },
-  eventLocation: {
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  detailText: {
     fontSize: 14,
-    marginBottom: 4,
   },
   eventParticipants: {
     fontSize: 14,
+    marginTop: 8,
   },
 }); 

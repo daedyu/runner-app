@@ -3,14 +3,16 @@ import { useColorScheme } from 'react-native';
 import Colors from '@/constants/Colors';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { Ionicons } from '@expo/vector-icons';
+import { getThemeColors } from '@/assets/theme/colors';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const colors = getThemeColors(colorScheme === 'dark');
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: colors.primary,
         headerShown: useClientOnlyValue(false, true),
         tabBarShowLabel: false,
       }}>
@@ -18,13 +20,13 @@ export default function TabLayout() {
         name="events"
         options={{
           title: '이벤트',
-          tabBarIcon: ({ color }) => <Ionicons name="star-outline" size={28} color={color} />,
+          tabBarIcon: ({ color }) => <Ionicons name="gift-outline" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="records"
         options={{
-          title: '달리기기록',
+          title: '기록',
           tabBarIcon: ({ color }) => <Ionicons name="fitness-outline" size={28} color={color} />,
         }}
       />
@@ -36,7 +38,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="competitions"
+        name="announcements"
         options={{
           title: '대회공고',
           tabBarIcon: ({ color }) => <Ionicons name="trophy-outline" size={28} color={color} />,
