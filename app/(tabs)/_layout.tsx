@@ -14,12 +14,13 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
         headerShown: useClientOnlyValue(false, true),
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
       }}>
       <Tabs.Screen
         name="events"
         options={{
           title: '이벤트',
+          tabBarLabel: '이벤트',
           tabBarIcon: ({ color }) => <Ionicons name="gift-outline" size={28} color={color} />,
         }}
       />
@@ -27,6 +28,7 @@ export default function TabLayout() {
         name="records"
         options={{
           title: '기록',
+          tabBarLabel: '기록',
           tabBarIcon: ({ color }) => <Ionicons name="fitness-outline" size={28} color={color} />,
         }}
       />
@@ -34,6 +36,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: '홈',
+          tabBarLabel: '홈',
           tabBarIcon: ({ color }) => <Ionicons name="home-outline" size={28} color={color} />,
         }}
       />
@@ -41,6 +44,7 @@ export default function TabLayout() {
         name="announcements"
         options={{
           title: '대회공고',
+          tabBarLabel: '대회',
           tabBarIcon: ({ color }) => <Ionicons name="trophy-outline" size={28} color={color} />,
         }}
       />
@@ -48,6 +52,7 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: '내정보',
+          tabBarLabel: '내 정보',
           tabBarIcon: ({ color }) => <Ionicons name="person-outline" size={28} color={color} />,
         }}
       />

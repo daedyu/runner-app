@@ -40,7 +40,7 @@ export default function ProfileScreen() {
 
   const handleSettings = () => {
     // 설정 페이지로 이동
-    // router.push('/profile/settings');
+    router.push('/settings');
   };
 
   const handleJoinTeam = () => {

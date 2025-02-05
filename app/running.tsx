@@ -105,10 +105,22 @@ export default function RunningScreen() {
   };
 
   const handleLocationUpdate = (newCoord: Coordinate) => {
+    console.log('위치 업데이트:', newCoord); // 디버깅용 로그 추가
     setRunningState(prev => {
+      // 이전 좌표와 동일한 위치인지 확인
+      const lastCoord = prev.coordinates[prev.coordinates.length - 1];
+      if (lastCoord && 
+          lastCoord.latitude === newCoord.latitude && 
+          lastCoord.longitude === newCoord.longitude) {
+        return prev; // 동일한 위치면 업데이트하지 않음
+      }
+
       const newCoords = [...prev.coordinates, newCoord];
+      console.log('새로운 좌표 배열 길이:', newCoords.length); // 디버깅용 로그 추가
+      
       const newDistance = calculateTotalDistance(newCoords);
-      const newAverageSpeed = newDistance / prev.elapsed;
+      const newAverageSpeed = prev.elapsed > 0 ? newDistance / prev.elapsed : 0;
+
       return {
         ...prev,
         coordinates: newCoords,
@@ -117,6 +129,13 @@ export default function RunningScreen() {
         currentLocation: newCoord,
       };
     });
+
+    // 지도를 현재 위치로 이동
+    mapRef.current?.animateToRegion({
+      ...newCoord,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
+    }, 1000);
   };
 
   const updateTimer = () => {
@@ -125,15 +144,18 @@ export default function RunningScreen() {
 
   const startTracking = async () => {
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+      console.log('위치 추적 시작...');
+      
+      // 위치 권한 요청
+      const foregroundPermission = await Location.requestForegroundPermissionsAsync();
+      console.log('위치 권한 상태:', foregroundPermission.status);
+      
+      if (foregroundPermission.status !== 'granted') {
         alert('위치 권한이 필요합니다.');
         return;
       }
 
-      setRunningState(prev => ({ ...prev, isRunning: true, isTestMode: false }));
-      timer.current = setInterval(updateTimer, 1000);
-
+      // 초기 위치 가져오기
       const initialLocation = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.BestForNavigation,
       });
@@ -142,26 +164,50 @@ export default function RunningScreen() {
         latitude: initialLocation.coords.latitude,
         longitude: initialLocation.coords.longitude,
       };
-      
-      handleLocationUpdate(initialCoord);
 
-      locationSubscription.current = await Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 1000,
-          distanceInterval: 1,
-        },
-        (location) => {
+      // 지도를 초기 위치로 이동
+      mapRef.current?.animateToRegion({
+        ...initialCoord,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      }, 1000);
+
+      // 상태 업데이트 - coordinates에 초기 위치 추가
+      setRunningState(prev => ({ 
+        ...prev, 
+        isRunning: true, 
+        isTestMode: false,
+        coordinates: [initialCoord], // 초기 위치를 배열에 추가
+        currentLocation: initialCoord,
+        elapsed: 0,
+        totalDistance: 0,
+        averageSpeed: 0,
+      }));
+
+      // 타이머 시작 (시간 측정용)
+      timer.current = setInterval(updateTimer, 1000);
+
+      // 위치 저장 타이머 시작 (5초마다 현재 위치 저장)
+      locationSubscription.current = setInterval(async () => {
+        try {
+          const location = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.BestForNavigation,
+          });
+          
           handleLocationUpdate({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
           });
+        } catch (error) {
+          console.error('위치 가져오기 실패:', error);
         }
-      );
+      }, 5000);
+
+      console.log('위치 추적 시작 완료');
     } catch (error) {
       console.error('위치 추적 시작 실패:', error);
       stopTracking();
-      alert('위치 추적을 시작할 수 없습니다.');
+      alert('위치 추적을 시작할 수 없습니다: ' + (error as Error).message);
     }
   };
 
@@ -194,7 +240,7 @@ export default function RunningScreen() {
   const stopTracking = () => {
     // 먼저 모든 타이머와 구독을 정리
     if (locationSubscription.current) {
-      locationSubscription.current.remove();
+      clearInterval(locationSubscription.current);
       locationSubscription.current = null;
     }
     if (timer.current) {
@@ -227,20 +273,29 @@ export default function RunningScreen() {
   };
 
   const handleStopRunning = () => {
-    if (timer.current) {
-      clearInterval(timer.current);
-    }
-    if (testInterval.current) {
-      clearInterval(testInterval.current);
-    }
-    if (locationSubscription.current) {
-      locationSubscription.current.remove();
-    }
-    setRunningState(prev => ({ ...prev, isSaveModalVisible: true }));
+    // 모달만 표시하고 측정은 계속 진행
+    setRunningState(prev => ({ 
+      ...prev,
+      isSaveModalVisible: true 
+    }));
   };
 
   const handleSaveRunning = async (title: string) => {
     try {
+      // 먼저 모든 타이머와 구독을 정리
+      if (locationSubscription.current) {
+        clearInterval(locationSubscription.current);
+        locationSubscription.current = null;
+      }
+      if (timer.current) {
+        clearInterval(timer.current);
+        timer.current = null;
+      }
+      if (testInterval.current) {
+        clearInterval(testInterval.current);
+        testInterval.current = null;
+      }
+
       const runningData = {
         title,
         distance: runningState.totalDistance,
@@ -266,6 +321,7 @@ export default function RunningScreen() {
       // 성공적으로 저장 후 초기화 및 모달 닫기
       setRunningState(prev => ({
         ...prev,
+        isRunning: false,
         isSaveModalVisible: false,
         elapsed: 0,
         totalDistance: 0,
@@ -273,10 +329,10 @@ export default function RunningScreen() {
         coordinates: [],
         currentLocation: { latitude: 35.8776, longitude: 128.6284 },
       }));
-      stopTracking();
+
+      router.back();
     } catch (error) {
       console.error('Error saving running:', error);
-      // 에러 처리 (알림 등)
     }
   };
 
@@ -291,16 +347,32 @@ export default function RunningScreen() {
   };
 
   const handleDelete = () => {
-    // 모든 타이머와 구독을 정리
-    stopTracking();
+    // 삭제 시에만 모든 타이머와 구독을 정리
+    if (locationSubscription.current) {
+      clearInterval(locationSubscription.current);
+      locationSubscription.current = null;
+    }
+    if (timer.current) {
+      clearInterval(timer.current);
+      timer.current = null;
+    }
+    if (testInterval.current) {
+      clearInterval(testInterval.current);
+      testInterval.current = null;
+    }
     
-    // 모달 닫기
+    // 모달 닫기 및 상태 초기화
     setRunningState(prev => ({
       ...prev,
-      isSaveModalVisible: false
+      isRunning: false,
+      isSaveModalVisible: false,
+      elapsed: 0,
+      totalDistance: 0,
+      averageSpeed: 0,
+      coordinates: [],
+      currentLocation: { latitude: 35.8776, longitude: 128.6284 },
     }));
 
-    // 스택을 쌓지 않고 바로 메인으로 이동
     router.back();
   };
 

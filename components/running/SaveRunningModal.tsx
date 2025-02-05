@@ -42,6 +42,13 @@ export default function SaveRunningModal({
     return `${mins}분 ${secs}초`;
   };
 
+  const formatDistance = (meters: number): string => {
+    if (meters < 1000) {
+      return `${Math.round(meters)}m`;
+    }
+    return `${(meters / 1000).toFixed(2)}km`;
+  };
+
   const handleModalPress = (e: any) => {
     e.stopPropagation();
   };
@@ -54,7 +61,7 @@ export default function SaveRunningModal({
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { backgroundColor: colors.modal.overlay }]}>
           <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.keyboardView}
@@ -71,7 +78,7 @@ export default function SaveRunningModal({
                       총 거리
                     </Text>
                     <Text style={[styles.statValue, { color: colors.text.primary }]}>
-                      {(distance / 1000).toFixed(2)}km
+                      {formatDistance(distance)}
                     </Text>
                   </View>
                   <View style={styles.statRow}>
@@ -87,7 +94,7 @@ export default function SaveRunningModal({
                       평균 속도
                     </Text>
                     <Text style={[styles.statValue, { color: colors.text.primary }]}>
-                      {(averageSpeed * 3.6).toFixed(1)}km/h
+                      {averageSpeed.toFixed(1)}m/s
                     </Text>
                   </View>
                 </View>
@@ -112,10 +119,20 @@ export default function SaveRunningModal({
                     <Text style={[styles.buttonText, { color: colors.error }]}>삭제</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.button, styles.saveButton, { backgroundColor: colors.primary }]}
-                    onPress={() => onSave(title)}
+                    style={[
+                      styles.button,
+                      styles.saveButton,
+                      { 
+                        backgroundColor: title.trim() ? colors.primary : colors.modal.disabledButton,
+                        opacity: title.trim() ? 1 : 0.5
+                      }
+                    ]}
+                    onPress={() => title.trim() && onSave(title)}
+                    disabled={!title.trim()}
                   >
-                    <Text style={[styles.buttonText, { color: colors.text.inverse }]}>저장</Text>
+                    <Text style={[styles.buttonText, { color: colors.text.inverse }]}>
+                      {title.trim() ? '저장' : '제목을입력하세요'}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -130,7 +147,6 @@ export default function SaveRunningModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -204,7 +220,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
   },
 }); 

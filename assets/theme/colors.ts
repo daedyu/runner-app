@@ -14,6 +14,10 @@ interface ThemeColors {
     background: string;
     fill: string;
   };
+  modal: {
+    overlay: string;
+    disabledButton: string;
+  };
 }
 
 export const lightColors: ThemeColors = {
@@ -32,6 +36,10 @@ export const lightColors: ThemeColors = {
     fill: '#2196F3',          // 프로그레스 바 채우기
   },
   error: '#FF4444',          // 라이트모드 에러 색상
+  modal: {
+    overlay: 'rgba(0, 0, 0, 0.5)',
+    disabledButton: '#666666',
+  },
 };
 
 export const darkColors: ThemeColors = {
@@ -50,6 +58,10 @@ export const darkColors: ThemeColors = {
     fill: '#64B5F6',          // 프로그레스 바 채우기
   },
   error: '#FF6B6B',          // 다크모드 에러 색상
+  modal: {
+    overlay: 'rgba(0, 0, 0, 0.5)',
+    disabledButton: '#B0B0B0',
+  },
 };
 
 export const getThemeColors = (isDark: boolean): ThemeColors => {
