@@ -21,7 +21,6 @@ interface LocationType {
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const colors = getThemeColors(colorScheme === 'dark');
-  const [isRunningModalVisible, setIsRunningModalVisible] = useState(false);
   const [location, setLocation] = useState<LocationType | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const mapRef = useRef<MapView>(null);
