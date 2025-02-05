@@ -16,7 +16,7 @@ interface Event {
   type: 'school' | 'other';
   imageUrl: string;
   participants: number;
-  progress?: number; // 진행률 (0-100)
+  progress?: number;
 }
 
 const DUMMY_EVENTS: Event[] = [

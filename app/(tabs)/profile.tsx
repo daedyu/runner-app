@@ -15,8 +15,8 @@ interface UserProfile {
 }
 
 const DUMMY_PROFILE: UserProfile = {
-  name: "김달리기",
-  school: "대구대학교",
+  name: "김민규",
+  school: "대구소프트웨어마이스터고등학교",
   grade: 2,
   imageUrl: "https://picsum.photos/200",
 };
