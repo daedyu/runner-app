@@ -31,7 +31,7 @@ const TEST_ROUTE = [
   { latitude: 35.8810, longitude: 128.6320 },  // 신천동
   { latitude: 35.8815, longitude: 128.6325 },  // 신천동 북쪽
   { latitude: 35.8820, longitude: 128.6330 },  // 신천동 공원
-  { latitude: 35.8825, longitude: 128.6335 },  // 동구 신천동
+  { latitude: 35.8825, longitude: 128.6335 },  // 동구 신천동d
   { latitude: 35.8830, longitude: 128.6340 },  // 신천동 주거지역
   { latitude: 35.8835, longitude: 128.6345 },  // 동대구로 주변
 ];
@@ -73,6 +73,7 @@ export function RunningModal({ isVisible, onClose }: RunningModalProps) {
   const panY = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(0)).current;
   const [isSaveModalVisible, setIsSaveModalVisible] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
     if (isVisible) {
@@ -192,21 +193,20 @@ export function RunningModal({ isVisible, onClose }: RunningModalProps) {
   };
 
   const updateTimer = () => {
-    setElapsed(prev => {
-      const newElapsed = prev + 1;
-      if (newElapsed > 0 && totalDistance > 0) {
-        const newSpeed = totalDistance / newElapsed;
-        setAverageSpeed(newSpeed);
-      }
-      return newElapsed;
-    });
+    setElapsed(prev => prev + 1);
   };
 
   const startTracking = async () => {
-    setIsTestMode(false);
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') return;
+      if (status !== 'granted') {
+        alert('위치 권한이 필요합니다.');
+        return;
+      }
+
+      setIsRunning(true);
+      setIsTestMode(false);
+      timer.current = setInterval(updateTimer, 1000);
 
       const initialLocation = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.BestForNavigation,
@@ -218,9 +218,7 @@ export function RunningModal({ isVisible, onClose }: RunningModalProps) {
       };
       
       setCurrentLocation(initialCoord);
-      setCoordinates([initialCoord]); // 초기 위치로 coordinates 배열 시작
-
-      timer.current = setInterval(updateTimer, 1000);
+      setCoordinates([initialCoord]);
 
       locationSubscription.current = await Location.watchPositionAsync(
         {
@@ -237,18 +235,23 @@ export function RunningModal({ isVisible, onClose }: RunningModalProps) {
         }
       );
     } catch (error) {
-      console.log(error);
+      console.error('위치 추적 시작 실패:', error);
+      if (timer.current) {
+        clearInterval(timer.current);
+      }
+      setIsRunning(false);
+      alert('위치 추적을 시작할 수 없습니다.');
     }
   };
 
   const startTestMode = () => {
+    setIsRunning(true);
     setIsTestMode(true);
     currentTestIndex.current = 0;
     
-    // 테스트 모드 시작 시 초기 위치 설정
     const initialTestLocation = TEST_ROUTE[0];
     setCurrentLocation(initialTestLocation);
-    setCoordinates([initialTestLocation]); // 초기 위치로 coordinates 배열 시작
+    setCoordinates([initialTestLocation]);
 
     timer.current = setInterval(updateTimer, 1000);
 
@@ -270,6 +273,7 @@ export function RunningModal({ isVisible, onClose }: RunningModalProps) {
   };
 
   const stopTracking = () => {
+    setIsRunning(false);
     if (locationSubscription.current) {
       locationSubscription.current.remove();
     }
@@ -433,7 +437,7 @@ export function RunningModal({ isVisible, onClose }: RunningModalProps) {
 
         {/* 하단 버튼 */}
         <View style={[styles.buttonContainer, { backgroundColor: colors.cardBackground }]}>
-        {!coordinates.length ? (
+        {!isRunning ? (
             <View style={styles.buttonRow}>
             <TouchableOpacity
                 style={[styles.button, { backgroundColor: colors.primary }]}
@@ -451,13 +455,16 @@ export function RunningModal({ isVisible, onClose }: RunningModalProps) {
             </TouchableOpacity>
             </View>
         ) : (
+          <View style={styles.buttonRow}>
             <TouchableOpacity
-            style={[styles.button, { backgroundColor: colors.primary }]}
-            onPress={handleStopRunning}
+              style={[styles.button, { backgroundColor: colors.primary }]}
+              onPress={handleStopRunning}
             >
-            <Ionicons name="stop" size={24} color={colors.text.inverse} />
-            <Text style={[styles.buttonText, { color: colors.text.inverse }]}>종료하기</Text>
+              <Ionicons name="stop" size={24} color={colors.text.inverse} />
+              <Text style={[styles.buttonText, { color: colors.text.inverse }]}>종료하기</Text>
             </TouchableOpacity>
+          </View>
+
         )}
         </View>
     </View>

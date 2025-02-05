@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Modal, View, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { 
+  Modal, 
+  StyleSheet, 
+  View, 
+  TouchableOpacity, 
+  TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform
+} from 'react-native';
 import { Text } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from 'react-native';
@@ -33,6 +43,14 @@ export default function SaveRunningModal({
     }
   };
 
+  const handleOverlayPress = () => {
+    onClose();
+  };
+
+  const handleModalPress = (e: any) => {
+    e.stopPropagation();
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -40,62 +58,83 @@ export default function SaveRunningModal({
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <View style={styles.centeredView}>
-        <View style={[styles.modalView, { backgroundColor: colors.cardBackground }]}>
-          <Text style={[styles.modalTitle, { color: colors.text.primary }]}>운동 저장하기</Text>
-          
-          <View style={styles.statsContainer}>
-            <Text style={[styles.statsText, { color: colors.text.secondary }]}>
-              거리: {Math.round(distance)}m
-            </Text>
-            <Text style={[styles.statsText, { color: colors.text.secondary }]}>
-              시간: {Math.floor(time / 60)}분 {time % 60}초
-            </Text>
-            <Text style={[styles.statsText, { color: colors.text.secondary }]}>
-              평균 속도: {averageSpeed.toFixed(1)}m/s
-            </Text>
-          </View>
+      <TouchableWithoutFeedback onPress={handleOverlayPress}>
+        <View style={styles.overlay}>
+          <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardView}
+          >
+            <TouchableWithoutFeedback onPress={handleModalPress}>
+              <View style={[styles.modalView, { backgroundColor: colors.cardBackground }]}>
+                <Text style={[styles.modalTitle, { color: colors.text.primary }]}>운동 저장하기</Text>
+                
+                <View style={styles.statsContainer}>
+                  <View style={styles.statItem}>
+                    <Text style={[styles.statLabel, { color: colors.text.secondary }]}>거리</Text>
+                    <Text style={[styles.statValue, { color: colors.text.primary }]}>
+                      {Math.round(distance)}m
+                    </Text>
+                  </View>
+                  <View style={styles.statItem}>
+                    <Text style={[styles.statLabel, { color: colors.text.secondary }]}>시간</Text>
+                    <Text style={[styles.statValue, { color: colors.text.primary }]}>
+                      {Math.floor(time / 60)}:{(time % 60).toString().padStart(2, '0')}
+                    </Text>
+                  </View>
+                  <View style={styles.statItem}>
+                    <Text style={[styles.statLabel, { color: colors.text.secondary }]}>평균 속도</Text>
+                    <Text style={[styles.statValue, { color: colors.text.primary }]}>
+                      {averageSpeed.toFixed(1)}m/s
+                    </Text>
+                  </View>
+                </View>
 
-          <TextInput
-            style={[styles.input, { 
-              backgroundColor: colors.background,
-              color: colors.text.primary,
-              borderColor: colors.border
-            }]}
-            placeholder="운동 제목을 입력하세요"
-            placeholderTextColor={colors.text.secondary}
-            value={title}
-            onChangeText={setTitle}
-          />
+                <TextInput
+                  style={[styles.input, { 
+                    backgroundColor: colors.background,
+                    color: colors.text.primary,
+                    borderColor: colors.border
+                  }]}
+                  placeholder="운동 제목을 입력하세요"
+                  placeholderTextColor={colors.text.secondary}
+                  value={title}
+                  onChangeText={setTitle}
+                />
 
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: colors.primary }]}
-              onPress={handleSave}
-            >
-              <Ionicons name="save" size={20} color={colors.text.inverse} />
-              <Text style={[styles.buttonText, { color: colors.text.inverse }]}>저장</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: colors.primary }]}
-              onPress={onClose}
-            >
-              <Ionicons name="close" size={20} color={colors.text.inverse} />
-              <Text style={[styles.buttonText, { color: colors.text.inverse }]}>취소</Text>
-            </TouchableOpacity>
-          </View>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={[styles.button, { backgroundColor: colors.primary }]}
+                    onPress={onClose}
+                  >
+                    <Text style={[styles.buttonText, { color: colors.text.primary }]}>취소</Text>
+
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.button, { backgroundColor: colors.primary }]}
+                    onPress={() => onSave(title)}
+                  >
+                    <Text style={[styles.buttonText, { color: colors.text.inverse }]}>저장</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  centeredView: {
+  overlay: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  keyboardView: {
+    width: '100%',
+    alignItems: 'center',
   },
   modalView: {
     width: '80%',
@@ -120,9 +159,18 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 20,
   },
-  statsText: {
-    fontSize: 16,
+  statItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 5,
+  },
+  statLabel: {
+    fontSize: 16,
+  },
+  statValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   input: {
     width: '100%',
@@ -135,17 +183,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
+    marginTop: 20,
   },
   button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 10,
     minWidth: 100,
-    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
-    marginLeft: 5,
     fontSize: 16,
     fontWeight: 'bold',
   },
