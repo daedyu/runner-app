@@ -22,7 +22,7 @@ const DUMMY_PROFILE: UserProfile = {
   name: "김민규",
   school: "대구소프트웨어마이스터고등학교",
   grade: 2,
-  imageUrl: "https://picsum.photos/200",
+  imageUrl: "https://picsum.photos/800",
   team: {
     name: "달리기 크루",
     role: "팀원"
@@ -173,14 +173,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
+    position: 'relative',
+    width: '100%',
   },
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginRight: 10,
+    textAlign: 'center',
   },
   editButton: {
     padding: 8,
+    position: 'absolute',
+    right: 0,
   },
   divider: {
     height: 1,
