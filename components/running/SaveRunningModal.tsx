@@ -6,12 +6,10 @@ import {
   TouchableOpacity, 
   TextInput,
   TouchableWithoutFeedback,
-  Keyboard,
+  Platform,
   KeyboardAvoidingView,
-  Platform
 } from 'react-native';
 import { Text } from '@/components/Themed';
-import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from 'react-native';
 import { getThemeColors } from '@/assets/theme/colors';
 
@@ -19,6 +17,7 @@ interface SaveRunningModalProps {
   isVisible: boolean;
   onClose: () => void;
   onSave: (title: string) => void;
+  onDelete: () => void;
   distance: number;
   time: number;
   averageSpeed: number;
@@ -28,6 +27,7 @@ export default function SaveRunningModal({
   isVisible,
   onClose,
   onSave,
+  onDelete,
   distance,
   time,
   averageSpeed,
@@ -36,15 +36,10 @@ export default function SaveRunningModal({
   const colorScheme = useColorScheme();
   const colors = getThemeColors(colorScheme === 'dark');
 
-  const handleSave = () => {
-    if (title.trim()) {
-      onSave(title);
-      setTitle('');
-    }
-  };
-
-  const handleOverlayPress = () => {
-    onClose();
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}분 ${secs}초`;
   };
 
   const handleModalPress = (e: any) => {
@@ -53,12 +48,12 @@ export default function SaveRunningModal({
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <TouchableWithoutFeedback onPress={handleOverlayPress}>
+      <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
           <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -66,25 +61,33 @@ export default function SaveRunningModal({
           >
             <TouchableWithoutFeedback onPress={handleModalPress}>
               <View style={[styles.modalView, { backgroundColor: colors.cardBackground }]}>
-                <Text style={[styles.modalTitle, { color: colors.text.primary }]}>운동 저장하기</Text>
+                <Text style={[styles.modalTitle, { color: colors.text.primary }]}>
+                  운동 기록 저장
+                </Text>
                 
                 <View style={styles.statsContainer}>
-                  <View style={styles.statItem}>
-                    <Text style={[styles.statLabel, { color: colors.text.secondary }]}>거리</Text>
+                  <View style={styles.statRow}>
+                    <Text style={[styles.statLabel, { color: colors.text.secondary }]}>
+                      총 거리
+                    </Text>
                     <Text style={[styles.statValue, { color: colors.text.primary }]}>
-                      {Math.round(distance)}m
+                      {(distance / 1000).toFixed(2)}km
                     </Text>
                   </View>
-                  <View style={styles.statItem}>
-                    <Text style={[styles.statLabel, { color: colors.text.secondary }]}>시간</Text>
+                  <View style={styles.statRow}>
+                    <Text style={[styles.statLabel, { color: colors.text.secondary }]}>
+                      운동 시간
+                    </Text>
                     <Text style={[styles.statValue, { color: colors.text.primary }]}>
-                      {Math.floor(time / 60)}:{(time % 60).toString().padStart(2, '0')}
+                      {formatTime(time)}
                     </Text>
                   </View>
-                  <View style={styles.statItem}>
-                    <Text style={[styles.statLabel, { color: colors.text.secondary }]}>평균 속도</Text>
+                  <View style={styles.statRow}>
+                    <Text style={[styles.statLabel, { color: colors.text.secondary }]}>
+                      평균 속도
+                    </Text>
                     <Text style={[styles.statValue, { color: colors.text.primary }]}>
-                      {averageSpeed.toFixed(1)}m/s
+                      {(averageSpeed * 3.6).toFixed(1)}km/h
                     </Text>
                   </View>
                 </View>
@@ -95,7 +98,7 @@ export default function SaveRunningModal({
                     color: colors.text.primary,
                     borderColor: colors.border
                   }]}
-                  placeholder="운동 제목을 입력하세요"
+                  placeholder="운동 제목"
                   placeholderTextColor={colors.text.secondary}
                   value={title}
                   onChangeText={setTitle}
@@ -103,14 +106,13 @@ export default function SaveRunningModal({
 
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity
-                    style={[styles.button, { backgroundColor: colors.primary }]}
-                    onPress={onClose}
+                    style={[styles.button, styles.deleteButton, { borderColor: colors.error }]}
+                    onPress={onDelete}
                   >
-                    <Text style={[styles.buttonText, { color: colors.text.primary }]}>취소</Text>
-
+                    <Text style={[styles.buttonText, { color: colors.error }]}>삭제</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.button, { backgroundColor: colors.primary }]}
+                    style={[styles.button, styles.saveButton, { backgroundColor: colors.primary }]}
                     onPress={() => onSave(title)}
                   >
                     <Text style={[styles.buttonText, { color: colors.text.inverse }]}>저장</Text>
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    width: '80%',
+    width: '85%',
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
@@ -153,44 +155,53 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   statsContainer: {
     width: '100%',
     marginBottom: 20,
   },
-  statItem: {
+  statRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 5,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
   },
   statLabel: {
     fontSize: 16,
   },
   statValue: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   input: {
     width: '100%',
-    padding: 10,
+    padding: 15,
     borderWidth: 1,
     borderRadius: 10,
     marginBottom: 20,
+    fontSize: 16,
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     width: '100%',
-    marginTop: 20,
+    gap: 10,
   },
   button: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    flex: 1,
+    padding: 15,
     borderRadius: 10,
-    minWidth: 100,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deleteButton: {
+    borderWidth: 1,
+  },
+  saveButton: {
+    elevation: 2,
   },
   buttonText: {
     fontSize: 16,

@@ -5,7 +5,6 @@ import * as Progress from 'react-native-progress';
 import { Ionicons } from '@expo/vector-icons';
 import { getThemeColors } from '@/assets/theme/colors';
 import SafeContainer from '@/components/common/SafeContainer';
-import RunningModal from '@/components/running/RunningModal';
 import { useState, useEffect, useRef } from 'react';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
@@ -224,11 +223,6 @@ export default function HomeScreen() {
           </View>
         </View>
       </View>
-      
-      <RunningModal
-        isVisible={isRunningModalVisible}
-        onClose={() => setIsRunningModalVisible(false)}
-      />
     </SafeContainer>
   );
 }
