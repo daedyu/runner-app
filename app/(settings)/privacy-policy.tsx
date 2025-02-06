@@ -8,7 +8,7 @@ export default function PrivacyPolicyScreen() {
   const NOTION_URL = "https://branched-desk-f3e.notion.site/93b942e53b314c7683368c07a8d44892?pvs=74";
 
   return (
-    <SafeContainer edges={['left', 'right']}>
+    <SafeContainer>
       <Stack.Screen
         options={{
           title: '개인정보 처리방침',

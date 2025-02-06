@@ -1,9 +1,9 @@
 import { Tabs } from 'expo-router';
 import { useColorScheme } from 'react-native';
-import Colors from '@/constants/Colors';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { Ionicons } from '@expo/vector-icons';
 import { getThemeColors } from '@/assets/theme/colors';
+import { HapticTab } from '@/components/HapticTab';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -15,6 +15,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: colors.primary,
         headerShown: useClientOnlyValue(false, true),
         tabBarShowLabel: true,
+        tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
         name="events"
