@@ -26,12 +26,12 @@ const DUMMY_PROFILE: UserProfile = {
   school: "대구소프트웨어마이스터고등학교",
   grade: 2,
   imageUrl: "https://picsum.photos/800",
-  // team: {
-  //   name: "달리기 크루",
-  //   role: "팀원",
-  //   totalDistance: 142.5,
-  //   memberCount: 8
-  // }
+  team: {
+    name: "달리기 크루",
+    role: "팀원",
+    totalDistance: 142.5,
+    memberCount: 8
+  }
 };
 
 export default function ProfileScreen() {

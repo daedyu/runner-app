@@ -193,7 +193,10 @@ export default function HomeScreen() {
       </View>
 
       {/* 목표 달성률 위젯 */}
-      <View style={styles.goalWidget}>
+      <TouchableOpacity 
+        style={styles.goalWidget}
+        onPress={() => router.push('/stats')}
+      >
         <Text style={styles.widgetTitle}>이번 달 목표 달성률</Text>
         <View style={styles.goalStats}>
           <View style={styles.goalItem}>
@@ -221,7 +224,7 @@ export default function HomeScreen() {
             <Text style={styles.goalText}>50% (5/10시간)</Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </SafeContainer>
   );
 }
