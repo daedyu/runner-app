@@ -9,6 +9,7 @@ import * as Progress from 'react-native-progress';
 import { Picker } from '@react-native-picker/picker';
 import { ChevronDown } from 'lucide-react-native';
 import { router } from 'expo-router';
+import StatBar from "@/components/stats/StatBar";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -214,67 +215,11 @@ export default function StatsScreen() {
         contentContainerStyle={styles.contentContainer}
       >
         {renderPeriodSelector()}
-
         <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-          <Text style={[styles.cardTitle, { color: colors.text.primary }]}>거리</Text>
-          <View style={styles.progressContainer}>
-            <Progress.Bar 
-              progress={isLoading ? 0 : distanceProgress}
-              width={SCREEN_WIDTH - 112}
-              height={15}
-              color={colors.progress.fill}
-              unfilledColor={colors.progress.background}
-              borderWidth={0}
-              animated={true}
-            />
-            <View style={styles.statsInfo}>
-              {isLoading ? (
-                <Text style={[styles.loadingText, { color: colors.text.secondary }]}>
-                  로딩 중...
-                </Text>
-              ) : (
-                <>
-                  <Text style={[styles.currentValue, { color: colors.text.primary }]}>
-                    {stats.distance.toLocaleString()}km
-                  </Text>
-                  <Text style={[styles.targetValue, { color: colors.text.secondary }]}>
-                    / {stats.targetDistance.toLocaleString()}km
-                  </Text>
-                </>
-              )}
-            </View>
-          </View>
+          <StatBar title={"거리"} colors={colors} currentData={stats.distance} targetData={stats.targetDistance} isLoading={isLoading} unit={"km"} />
         </View>
-
         <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-          <Text style={[styles.cardTitle, { color: colors.text.primary }]}>시간</Text>
-          <View style={styles.progressContainer}>
-            <Progress.Bar 
-              progress={isLoading ? 0 : timeProgress}
-              width={SCREEN_WIDTH - 112}
-              height={15}
-              color={colors.progress.fill}
-              unfilledColor={colors.progress.background}
-              borderWidth={0}
-              animated={true}
-            />
-            <View style={styles.statsInfo}>
-              {isLoading ? (
-                <Text style={[styles.loadingText, { color: colors.text.secondary }]}>
-                  로딩 중...
-                </Text>
-              ) : (
-                <>
-                  <Text style={[styles.currentValue, { color: colors.text.primary }]}>
-                    {formatTime(stats.time)}
-                  </Text>
-                  <Text style={[styles.targetValue, { color: colors.text.secondary }]}>
-                    / {formatTime(stats.targetTime)}
-                  </Text>
-                </>
-              )}
-            </View>
-          </View>
+          <StatBar title={"시간"} colors={colors} currentData={stats.time} targetData={stats.targetTime} isLoading={isLoading} unit={"time"} />
         </View>
       </ScrollView>
     </SafeContainer>

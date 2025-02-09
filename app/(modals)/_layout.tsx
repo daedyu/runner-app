@@ -1,14 +1,23 @@
-import {Stack} from "expo-router";
+import { Stack } from 'expo-router';
 
-export default function ModalLayout() {
+export default function ModalsLayout() {
     return (
         <Stack
             screenOptions={{
-                presentation: 'modal',
-                animation: 'fade',
+                headerShown: false,
+                presentation: 'transparentModal',
+                animation: 'slide_from_bottom',
+                contentStyle: {
+                    backgroundColor: 'transparent',
+                },
             }}
         >
-            <Stack.Screen name="privacy-policy"/>
+            <Stack.Screen 
+                name="privacy-policy"
+                options={{
+                    animation: 'slide_from_bottom',
+                }}
+            />
         </Stack>
     )
 }

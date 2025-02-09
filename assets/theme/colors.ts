@@ -1,4 +1,4 @@
-interface ThemeColors {
+export interface ThemeColors {
   primary: string;
   background: string;
   cardBackground: string;

@@ -83,90 +83,16 @@ export default function HomeScreen() {
     };
   }, []);
 
-  const styles = StyleSheet.create({
-    measureWidget: {
-      backgroundColor: colors.cardBackground,
-      borderRadius: 15,
-      padding: 16,
-      marginBottom: 16,
-      elevation: 3,
-      shadowColor: colors.shadow,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
-    widgetTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 12,
-      color: colors.text.primary,
-    },
-    mapContainer: {
-      height: 200,
-      borderRadius: 12,
-      overflow: 'hidden',
-      marginBottom: 16,
-    },
-    map: {
-      width: '100%',
-      height: '100%',
-    },
-    startButton: {
-      backgroundColor: colors.primary,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 12,
-      borderRadius: 10,
-    },
-    buttonText: {
-      color: colors.text.inverse,
-      fontSize: 16,
-      fontWeight: 'bold',
-      marginLeft: 8,
-    },
-    goalWidget: {
-      backgroundColor: colors.cardBackground,
-      borderRadius: 15,
-      padding: 16,
-      elevation: 3,
-      shadowColor: colors.shadow,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
-    goalStats: {
-      gap: 16,
-    },
-    goalItem: {
-      gap: 8,
-    },
-    goalLabel: {
-      fontSize: 14,
-      color: colors.text.secondary,
-    },
-    goalText: {
-      fontSize: 14,
-      color: colors.text.secondary,
-      textAlign: 'right',
-    },
-    errorText: {
-      color: 'red',
-      textAlign: 'center',
-      padding: 10,
-    },
-    loadingText: {
-      color: colors.text.secondary,
-      textAlign: 'center',
-      padding: 10,
-    }
-  });
-
   return (
     <SafeContainer>
-      {/* 측정하기 위젯 */}
-      <View style={styles.measureWidget}>
-        <Text style={styles.widgetTitle}>측정하기</Text>
+      <View style={[
+        styles.measureWidget,
+        {
+          backgroundColor: colors.cardBackground,
+          shadowColor: colors.shadow
+        }
+      ]}>
+        <Text style={[styles.widgetTitle, {color: colors.text.primary}]}>측정하기</Text>
         <View style={styles.mapContainer}>
           {errorMsg ? (
             <Text style={styles.errorText}>{errorMsg}</Text>
@@ -180,27 +106,26 @@ export default function HomeScreen() {
               followsUserLocation={true}
             />
           ) : (
-            <Text style={styles.loadingText}>위치를 가져오는 중...</Text>
+            <Text style={[styles.loadingText, {color: colors.text.secondary}]}>위치를 가져오는 중...</Text>
           )}
         </View>
         <TouchableOpacity 
-          style={styles.startButton}
+          style={[styles.startButton, {backgroundColor: colors.primary}]}
           onPress={() => router.push('/running')}
         >
           <Ionicons name="play" size={24} color={colors.text.inverse} />
-          <Text style={styles.buttonText}>달리기 시작</Text>
+          <Text style={[styles.buttonText, {color: colors.text.inverse}]}>달리기 시작</Text>
         </TouchableOpacity>
       </View>
 
-      {/* 목표 달성률 위젯 */}
       <TouchableOpacity 
-        style={styles.goalWidget}
+        style={[styles.goalWidget, {backgroundColor: colors.cardBackground, shadowColor: colors.shadow}]}
         onPress={() => router.push('/stats')}
       >
         <Text style={styles.widgetTitle}>이번 달 목표 달성률</Text>
         <View style={styles.goalStats}>
           <View style={styles.goalItem}>
-            <Text style={styles.goalLabel}>거리</Text>
+            <Text style={[styles.goalLabel, {color: colors.text.secondary}]}>거리</Text>
             <Progress.Bar 
               progress={0.7} 
               width={SCREEN_WIDTH * 0.7} 
@@ -212,7 +137,7 @@ export default function HomeScreen() {
             <Text style={styles.goalText}>70% (35/50km)</Text>
           </View>
           <View style={styles.goalItem}>
-            <Text style={styles.goalLabel}>시간</Text>
+            <Text style={[styles.goalLabel, {color: colors.text.secondary}]}>시간</Text>
             <Progress.Bar 
               progress={0.5} 
               width={SCREEN_WIDTH * 0.7} 
@@ -221,10 +146,79 @@ export default function HomeScreen() {
               unfilledColor={colors.progress.background}
               borderWidth={0}
             />
-            <Text style={styles.goalText}>50% (5/10시간)</Text>
+            <Text style={[styles.goalText, {color: colors.text.secondary}]}>50% (5/10시간)</Text>
           </View>
         </View>
       </TouchableOpacity>
     </SafeContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  measureWidget: {
+    borderRadius: 15,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  widgetTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  mapContainer: {
+    height: 200,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+  startButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    borderRadius: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  goalWidget: {
+    borderRadius: 15,
+    padding: 16,
+    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  goalStats: {
+    gap: 16,
+  },
+  goalItem: {
+    gap: 8,
+  },
+  goalLabel: {
+    fontSize: 14
+  },
+  goalText: {
+    fontSize: 14,
+    textAlign: 'right',
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    padding: 10,
+  },
+  loadingText: {
+    textAlign: 'center',
+    padding: 10,
+  }
+});
