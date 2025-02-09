@@ -1,7 +1,6 @@
 import { StyleSheet, View, Dimensions, TouchableOpacity, useColorScheme } from 'react-native';
 import { Text } from '@/components/Themed';
 import MapView from 'react-native-maps';
-import * as Progress from 'react-native-progress';
 import { Ionicons } from '@expo/vector-icons';
 import { getThemeColors } from '@/assets/theme/colors';
 import SafeContainer from '@/components/common/SafeContainer';

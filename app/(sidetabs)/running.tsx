@@ -467,7 +467,6 @@ export default function RunningScreen() {
           </MapView>
         </View>
 
-        {/* 하단 버튼 */}
         <View style={[styles.buttonContainer, { backgroundColor: colors.cardBackground }]}>
           {!runningState.isRunning ? (
             <View style={styles.buttonRow}>
@@ -476,29 +475,24 @@ export default function RunningScreen() {
                   styles.button, 
                   { 
                     backgroundColor: colors.primary,
-                    opacity: isInitializing ? 0.7 : 1 // 로딩 중일 때 버튼 투명도 조정
+                    opacity: isInitializing ? 0.7 : 1
                   }
                 ]}
                 onPress={startTracking}
-                disabled={isInitializing} // 로딩 중일 때 버튼 비활성화
+                disabled={isInitializing}
               >
-                {isInitializing ? (
-                  <Text style={[styles.buttonText, { color: colors.text.inverse }]}>
-                    초기화 중...
-                  </Text>
-                ) : (
-                  <>
-                    <Ionicons name="play" size={24} color={colors.text.inverse} />
-                    <Text style={[styles.buttonText, { color: colors.text.inverse }]}>실제 추적</Text>
-                  </>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: colors.primary }]}
-                onPress={startTestMode}
-              >
-                <Ionicons name="bug" size={24} color={colors.text.inverse} />
-                <Text style={[styles.buttonText, { color: colors.text.inverse }]}>테스트 모드</Text>
+                <View style={styles.buttonBox}>
+                  {isInitializing ? (
+                      <Text style={[styles.buttonText, { color: colors.text.inverse }]}>
+                        초기화 중...
+                      </Text>
+                  ): (
+                    <>
+                      <Ionicons name="play" size={24} color={colors.text.inverse} />
+                      <Text style={[styles.buttonText, { color: colors.text.inverse }]}>시작하기</Text>
+                    </>
+                  )}
+                </View>
               </TouchableOpacity>
             </View>
           ) : (
@@ -588,6 +582,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 10,
+  },
+  buttonBox: {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 25
   },
   button: {
     flex: 1,
