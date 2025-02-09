@@ -5,6 +5,7 @@ import { useColorScheme } from 'react-native';
 import { getThemeColors } from '@/assets/theme/colors';
 import SafeContainer from '@/components/common/SafeContainer';
 import { Search } from 'lucide-react-native';
+import {FilterType} from "@/types/announcements/announcements.types";
 
 interface Announcement {
   id: string;
@@ -40,7 +41,6 @@ const DUMMY_ANNOUNCEMENTS: Announcement[] = [
   },
 ];
 
-type FilterType = 'all' | 'school' | 'other';
 
 export default function AnnouncementsScreen() {
   const colorScheme = useColorScheme();
@@ -68,7 +68,6 @@ export default function AnnouncementsScreen() {
 
   return (
     <SafeContainer>
-      {/* 검색바 */}
       <View style={[styles.searchContainer, { backgroundColor: colors.cardBackground }]}>
         <Search size={20} color={colors.text.secondary} />
         <TextInput
@@ -80,7 +79,6 @@ export default function AnnouncementsScreen() {
         />
       </View>
 
-      {/* 필터 버튼 */}
       <View style={styles.filterContainer}>
         <TouchableOpacity
           style={[
@@ -126,7 +124,6 @@ export default function AnnouncementsScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* 대회 목록 */}
       <ScrollView style={styles.announcementList}>
         {filteredAnnouncements.map((announcement) => (
           <TouchableOpacity
