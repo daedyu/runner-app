@@ -75,8 +75,16 @@ export default function StatsScreen() {
     let newStats;
     if (period === 'year') {
       newStats = generateDummyStats(year || selectedYear);
-    } else {
+    } else if (period === 'day' || period === 'month') {
       newStats = DUMMY_STATS[period];
+    } else {
+      // custom 기간의 경우 기본값 사용
+      newStats = {
+        distance: 0,
+        targetDistance: 0, 
+        time: 0,
+        targetTime: 0
+      };
     }
 
     setStats(newStats);

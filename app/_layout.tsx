@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import {Platform} from "react-native";
+import {StatusBar} from "expo-status-bar";
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -44,20 +46,17 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <StatusBar style={'auto'} />
       <Stack
         screenOptions={{
           headerShown: false,
         }}
         initialRouteName="(tabs)"
       >
-        <Stack.Screen
-          name="running"
-          options={{
-            presentation: 'fullScreenModal',
-            animation: 'slide_from_bottom',
-          }}
-        />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(sidetabs)" />
+        <Stack.Screen name="(modals)"/>
+        <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>
   );

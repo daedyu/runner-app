@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import { WebView } from 'react-native-webview';
 import { Stack } from 'expo-router';
 import SafeContainer from '@/components/common/SafeContainer';
@@ -9,12 +9,6 @@ export default function PrivacyPolicyScreen() {
 
   return (
     <SafeContainer>
-      <Stack.Screen
-        options={{
-          title: '개인정보 처리방침',
-          headerBackTitle: '뒤로',
-        }}
-      />
       <WebView 
         source={{ uri: NOTION_URL }}
         style={styles.webview}

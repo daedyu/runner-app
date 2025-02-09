@@ -53,6 +53,7 @@ export default function RunningScreen() {
   const mapRef = useRef<MapView>(null);
   const testInterval = useRef<any>(null);
   const currentTestIndex = useRef(0);
+  const [isInitializing, setIsInitializing] = useState(false);
 
   useEffect(() => {
     return () => stopTracking();
@@ -143,6 +144,7 @@ export default function RunningScreen() {
   };
 
   const startTracking = async () => {
+    setIsInitializing(true); // 로딩 시작
     try {
       console.log('위치 추적 시작...');
       
@@ -152,6 +154,7 @@ export default function RunningScreen() {
       
       if (foregroundPermission.status !== 'granted') {
         alert('위치 권한이 필요합니다.');
+        setIsInitializing(false); // 권한 거부 시 로딩 종료
         return;
       }
 
@@ -204,10 +207,12 @@ export default function RunningScreen() {
       }, 5000);
 
       console.log('위치 추적 시작 완료');
+      setIsInitializing(false); // 로딩 종료
     } catch (error) {
       console.error('위치 추적 시작 실패:', error);
       stopTracking();
       alert('위치 추적을 시작할 수 없습니다: ' + (error as Error).message);
+      setIsInitializing(false); // 에러 발생 시 로딩 종료
     }
   };
 
@@ -467,11 +472,26 @@ export default function RunningScreen() {
           {!runningState.isRunning ? (
             <View style={styles.buttonRow}>
               <TouchableOpacity
-                style={[styles.button, { backgroundColor: colors.primary }]}
+                style={[
+                  styles.button, 
+                  { 
+                    backgroundColor: colors.primary,
+                    opacity: isInitializing ? 0.7 : 1 // 로딩 중일 때 버튼 투명도 조정
+                  }
+                ]}
                 onPress={startTracking}
+                disabled={isInitializing} // 로딩 중일 때 버튼 비활성화
               >
-                <Ionicons name="play" size={24} color={colors.text.inverse} />
-                <Text style={[styles.buttonText, { color: colors.text.inverse }]}>실제 추적</Text>
+                {isInitializing ? (
+                  <Text style={[styles.buttonText, { color: colors.text.inverse }]}>
+                    초기화 중...
+                  </Text>
+                ) : (
+                  <>
+                    <Ionicons name="play" size={24} color={colors.text.inverse} />
+                    <Text style={[styles.buttonText, { color: colors.text.inverse }]}>실제 추적</Text>
+                  </>
+                )}
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, { backgroundColor: colors.primary }]}
