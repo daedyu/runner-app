@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import StatBar from "@/components/stats/StatBar";
+import IconButton from "@/components/common/IconButton";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -109,13 +110,7 @@ export default function HomeScreen() {
             <Text style={[styles.loadingText, {color: colors.text.secondary}]}>위치를 가져오는 중...</Text>
           )}
         </View>
-        <TouchableOpacity 
-          style={[styles.startButton, {backgroundColor: colors.primary}]}
-          onPress={() => router.push('/running')}
-        >
-          <Ionicons name="play" size={24} color={colors.text.inverse} />
-          <Text style={[styles.buttonText, {color: colors.text.inverse}]}>달리기 시작</Text>
-        </TouchableOpacity>
+        <IconButton icons={"play"} buttonText={"달리기 시작"} onPress={()=> router.push('/running')} colors={colors} />
       </View>
 
       <TouchableOpacity 
@@ -160,18 +155,6 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '100%',
-  },
-  startButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
-    borderRadius: 10,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
   },
   goalWidget: {
     borderRadius: 15,

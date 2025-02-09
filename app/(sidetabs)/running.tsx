@@ -8,6 +8,7 @@ import { getThemeColors } from '@/assets/theme/colors';
 import { useColorScheme } from 'react-native';
 import SaveRunningModal from '@/components/running/SaveRunningModal';
 import { Stack, router } from 'expo-router';
+import IconButton from "@/components/common/IconButton";
 
 interface Coordinate {
   latitude: number;
@@ -469,42 +470,9 @@ export default function RunningScreen() {
 
         <View style={[styles.buttonContainer, { backgroundColor: colors.cardBackground }]}>
           {!runningState.isRunning ? (
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={[
-                  styles.button, 
-                  { 
-                    backgroundColor: colors.primary,
-                    opacity: isInitializing ? 0.7 : 1
-                  }
-                ]}
-                onPress={startTracking}
-                disabled={isInitializing}
-              >
-                <View style={styles.buttonBox}>
-                  {isInitializing ? (
-                      <Text style={[styles.buttonText, { color: colors.text.inverse }]}>
-                        초기화 중...
-                      </Text>
-                  ): (
-                    <>
-                      <Ionicons name="play" size={24} color={colors.text.inverse} />
-                      <Text style={[styles.buttonText, { color: colors.text.inverse }]}>시작하기</Text>
-                    </>
-                  )}
-                </View>
-              </TouchableOpacity>
-            </View>
+            <IconButton onPress={startTracking} icons={"play"} colors={colors} buttonText={"시작하기"} disabled={isInitializing} />
           ) : (
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: colors.primary }]}
-                onPress={handleStopRunning}
-              >
-                <Ionicons name="stop" size={24} color={colors.text.inverse} />
-                <Text style={[styles.buttonText, { color: colors.text.inverse }]}>종료하기</Text>
-              </TouchableOpacity>
-            </View>
+            <IconButton onPress={handleStopRunning} icons={"stop"} colors={colors} buttonText={"종료하기"}/>
           )}
         </View>
       </View>
@@ -577,17 +545,13 @@ const styles = StyleSheet.create({
   buttonContainer: {
     padding: 20,
     paddingBottom: Platform.OS === 'ios' ? 40 : 20,
-  },
-  buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 10,
   },
   buttonBox: {
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'row',
-    height: 25
+    padding: 20
   },
   button: {
     flex: 1,
