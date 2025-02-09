@@ -167,7 +167,7 @@ export default function StatsScreen() {
             </TouchableOpacity>
             
             {showYearPicker && (
-              <View style={[styles.yearPickerContainer, { backgroundColor: colors.cardBackground }]}>
+              <View style={[styles.yearPickerContainer, { backgroundColor: colors.cardBackground, borderColor: colors.border }]}>
                 <Picker
                   selectedValue={selectedYear}
                   onValueChange={(itemValue) => {
@@ -193,9 +193,6 @@ export default function StatsScreen() {
     );
   };
 
-  const distanceProgress = stats.distance / stats.targetDistance;
-  const timeProgress = stats.time / stats.targetTime;
-
   return (
     <SafeContainer>
       <Stack.Screen
@@ -209,12 +206,12 @@ export default function StatsScreen() {
           )
         }}
       />
-      
-      <ScrollView 
+      {renderPeriodSelector()}
+      <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        {renderPeriodSelector()}
+
         <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
           <StatBar title={"거리"} colors={colors} currentData={stats.distance} targetData={stats.targetDistance} isLoading={isLoading} unit={"km"} />
         </View>
@@ -266,28 +263,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  progressContainer: {
-    width: '100%',
-  },
-  statsInfo: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    marginTop: 8,
-    alignSelf: 'flex-start',
-  },
-  currentValue: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  targetValue: {
-    fontSize: 16,
-    marginLeft: 4,
-  },
   yearSelectorContainer: {
     marginTop: 12,
     position: 'relative',
@@ -336,9 +311,5 @@ const styles = StyleSheet.create({
   yearPicker: {
     width: '100%',
     height: Platform.OS === 'ios' ? 180 : 50,
-  },
-  loadingText: {
-    fontSize: 16,
-    fontWeight: '500',
   },
 }); 

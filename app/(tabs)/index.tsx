@@ -8,6 +8,7 @@ import SafeContainer from '@/components/common/SafeContainer';
 import { useState, useEffect, useRef } from 'react';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
+import StatBar from "@/components/stats/StatBar";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -125,28 +126,10 @@ export default function HomeScreen() {
         <Text style={styles.widgetTitle}>이번 달 목표 달성률</Text>
         <View style={styles.goalStats}>
           <View style={styles.goalItem}>
-            <Text style={[styles.goalLabel, {color: colors.text.secondary}]}>거리</Text>
-            <Progress.Bar 
-              progress={0.7} 
-              width={SCREEN_WIDTH * 0.7} 
-              height={15}
-              color={colors.progress.fill}
-              unfilledColor={colors.progress.background}
-              borderWidth={0}
-            />
-            <Text style={styles.goalText}>70% (35/50km)</Text>
+            <StatBar title={"거리"} colors={colors} currentData={30} targetData={700} isLoading={false} unit={"km"}  />
           </View>
           <View style={styles.goalItem}>
-            <Text style={[styles.goalLabel, {color: colors.text.secondary}]}>시간</Text>
-            <Progress.Bar 
-              progress={0.5} 
-              width={SCREEN_WIDTH * 0.7} 
-              height={15}
-              color={colors.progress.fill}
-              unfilledColor={colors.progress.background}
-              borderWidth={0}
-            />
-            <Text style={[styles.goalText, {color: colors.text.secondary}]}>50% (5/10시간)</Text>
+            <StatBar title={"시간"} colors={colors} currentData={30} targetData={700} isLoading={false} unit={"time"}  />
           </View>
         </View>
       </TouchableOpacity>
@@ -204,6 +187,7 @@ const styles = StyleSheet.create({
   },
   goalItem: {
     gap: 8,
+    paddingHorizontal: 20
   },
   goalLabel: {
     fontSize: 14

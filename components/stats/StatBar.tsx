@@ -65,7 +65,7 @@ export default function StatBar({title, colors, currentData, targetData, isLoadi
 
 const styles = StyleSheet.create({
     cardTitle: {
-        fontSize: 16,
+        fontSize: 19,
         fontWeight: '600',
         marginBottom: 12,
     },
@@ -79,11 +79,11 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
     },
     loadingText: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '500',
     },
     currentValue: {
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: '600',
     },
     targetValue: {
