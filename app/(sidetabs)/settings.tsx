@@ -14,8 +14,8 @@ export default function SettingsScreen() {
   const router = useRouter();
 
   const handleLogout = () => {
-    console.log("asdasdasd로그아웃 로직")
-    // 로그아웃 로직
+    router.dismissAll()
+    router.replace('/(auth)/sign-in');
   };
 
   const handleLeaveTeam = () => {

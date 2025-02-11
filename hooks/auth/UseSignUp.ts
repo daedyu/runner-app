@@ -1,24 +1,25 @@
 import { useState } from 'react';
-import { signIn as signInApi } from '@/repository/auth.repository';
+import { signUp as signUpApi } from '@/repository/auth.repository';
 
-interface SignInCredentials {
+interface SignUpData {
   email: string;
   password: string;
+  name: string;
 }
 
-export function useSignIn() {
+export function useSignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const signIn = async (credentials: SignInCredentials) => {
+  const signUp = async (data: SignUpData) => {
     try {
       setIsLoading(true);
       setError(null);
       
-      const response = await signInApi(credentials);
+      const response = await signUpApi(data);
       return response;
     } catch (err) {
-      setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+      setError('회원가입에 실패했습니다. 다시 시도해주세요.');
       throw err;
     } finally {
       setIsLoading(false);
@@ -26,8 +27,8 @@ export function useSignIn() {
   };
 
   return {
-    signIn,
+    signUp,
     isLoading,
     error,
   };
-}
+} 

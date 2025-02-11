@@ -54,6 +54,7 @@ function RootLayoutNav() {
         initialRouteName="(tabs)"
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" />
         <Stack.Screen name="(sidetabs)" />
         <Stack.Screen name="(modals)"/>
         <Stack.Screen name="+not-found" />
