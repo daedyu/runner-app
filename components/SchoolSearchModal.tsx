@@ -24,7 +24,6 @@ interface SchoolSearchModalProps {
   onSelect: (school: string) => void;
 }
 
-// 임시 데이터 - 실제로는 API로 검색 결과를 받아와야 함
 const DUMMY_SCHOOLS = [
   '대구소프트웨어마이스터고등학교',
   '광주소프트웨어마이스터고등학교',

@@ -15,7 +15,7 @@ interface SignUpData {
 class AuthRepository {
   public async signIn(request: SignInRequest): Promise<SignInResponse> {
     const { data } = await axios.post<SignInResponse>(
-        `http://localhost:8080/auth/signIn`,
+        `http://192.168.0.18:8080/auth/sign-in`,
         request
     );
     return data;

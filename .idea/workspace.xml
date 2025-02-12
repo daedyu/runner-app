@@ -5,16 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7c30ed4c-d30f-47e6-8123-34a331f8b666" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/repository/user/user.repository.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/types/auth/auth.types.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/types/support/response.types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/constants/token/token.constants.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(auth)/sign-in.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(auth)/sign-in.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(auth)/sign-up.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(auth)/sign-up.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hooks/auth/UseSignIn.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/auth/UseSignIn.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hooks/auth/UseSignUp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hooks/auth/UseSignUp.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repository/auth.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/repository/auth/auth.repository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repository/auth/auth.repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/repository/auth/auth.repository.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +108,7 @@
       <workItem from="1738753634008" duration="886000" />
       <workItem from="1738754546341" duration="464000" />
       <workItem from="1738817414352" duration="27474000" />
-      <workItem from="1739321827590" duration="4288000" />
+      <workItem from="1739321827590" duration="8245000" />
     </task>
     <servers />
   </component>

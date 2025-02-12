@@ -1,31 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { Text } from '@/components/Themed';
 import { useColorScheme } from 'react-native';
 import { getThemeColors } from '@/assets/theme/colors';
 import SafeContainer from '@/components/common/SafeContainer';
 import { router } from 'expo-router';
-import { useSignIn } from '@/hooks/auth/UseSignIn';
+import useSignIn from '@/hooks/auth/UseSignIn';
 
 export default function SignInScreen() {
   const colorScheme = useColorScheme();
   const colors = getThemeColors(colorScheme === 'dark');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  
   const {
-    signIn,
+    signInData,
+    submit,
     loading,
+    setEmail,
+    setPassword,
   } = useSignIn();
-
-  const handleSignIn = async () => {
-    try {
-      await signIn({ email, password });
-      router.replace('/(tabs)');
-    } catch (error) {
-      console.error('로그인 실패:', error);
-    }
-  };
 
   return (
     <SafeContainer>
@@ -49,7 +40,7 @@ export default function SignInScreen() {
                   borderColor: colors.border,
                   backgroundColor: colors.cardBackground,
                 }]}
-                value={email}
+                value={signInData.email}
                 onChangeText={setEmail}
                 placeholder="이메일을 입력하세요"
                 placeholderTextColor={colors.text.secondary}
@@ -68,20 +59,13 @@ export default function SignInScreen() {
                   borderColor: colors.border,
                   backgroundColor: colors.cardBackground,
                 }]}
-                value={password}
+                value={signInData.password}
                 onChangeText={setPassword}
                 placeholder="비밀번호를 입력하세요"
                 placeholderTextColor={colors.text.secondary}
                 secureTextEntry
               />
             </View>
-
-            {error && (
-              <Text style={[styles.errorText, { color: colors.error }]}>
-                {error}
-              </Text>
-            )}
-
             <TouchableOpacity
               style={[
                 styles.signInButton,
@@ -90,7 +74,7 @@ export default function SignInScreen() {
                   opacity: loading ? 0.7 : 1
                 }
               ]}
-              onPress={handleSignIn}
+              onPress={submit}
               disabled={loading}
             >
               <Text style={[styles.signInButtonText, { color: colors.text.inverse }]}>

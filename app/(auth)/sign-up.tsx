@@ -139,7 +139,7 @@ export default function SignUpScreen() {
 
             <TouchableOpacity
               style={styles.signInButton}
-              onPress={() => router.push('/(auth)/sign-in')}
+              onPress={() => router.back()}
             >
               <Text style={[styles.signInButtonText, { color: colors.text.secondary }]}>
                 이미 계정이 있으신가요? 로그인
