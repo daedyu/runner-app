@@ -9,33 +9,23 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   Keyboard,
-  Animated
+  Animated,
+  ActivityIndicator
 } from 'react-native';
 import { Text } from '@/components/Themed';
 import { getThemeColors } from '@/assets/theme/colors';
 import { useColorScheme } from 'react-native';
 import { Search, X } from 'lucide-react-native';
+import useSchoolSearch from '@/hooks/school/UseSchoolSearch';
+import { SchoolResponse } from '@/types/school/school.types';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 interface SchoolSearchModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onSelect: (school: string) => void;
+  onSelect: (school: SchoolResponse) => void;
 }
-
-const DUMMY_SCHOOLS = [
-  '대구소프트웨어마이스터고등학교',
-  '광주소프트웨어마이스터고등학교',
-  '대전소프트웨어마이스터고등학교',
-  '부산소프트웨어마이스터고등학교',
-  '울산소프트웨어마이스터고등학교',
-  '경남소프트웨어마이스터고등학교',
-  '경북소프트웨어마이스터고등학교',
-  '전남소프트웨어마이스터고등학교',
-  '전북소프트웨어마이스터고등학교',
-  
-];
 
 export default function SchoolSearchModal({ 
   isVisible, 
@@ -44,11 +34,16 @@ export default function SchoolSearchModal({
 }: SchoolSearchModalProps) {
   const colorScheme = useColorScheme();
   const colors = getThemeColors(colorScheme === 'dark');
-  
   const [searchText, setSearchText] = useState('');
-  const [searchResults, setSearchResults] = useState(DUMMY_SCHOOLS);
   const overlayOpacity = new Animated.Value(0);
   const modalPosition = new Animated.Value(SCREEN_HEIGHT);
+
+  const { 
+    schools,
+    loading,
+    error,
+    searchSchools
+  } = useSchoolSearch();
 
   useEffect(() => {
     if (isVisible) {
@@ -86,14 +81,10 @@ export default function SchoolSearchModal({
 
   const handleSearch = (text: string) => {
     setSearchText(text);
-    // 실제로는 API 호출로 대체되어야 함
-    const filtered = DUMMY_SCHOOLS.filter(school => 
-      school.toLowerCase().includes(text.toLowerCase())
-    );
-    setSearchResults(filtered);
+    searchSchools(text);
   };
 
-  const handleSelect = (school: string) => {
+  const handleSelect = (school: SchoolResponse) => {
     onSelect(school);
     onClose();
     setSearchText('');
@@ -150,17 +141,33 @@ export default function SchoolSearchModal({
                 placeholder="학교명을 입력하세요"
                 placeholderTextColor={colors.text.secondary}
               />
+              {loading && (
+                <ActivityIndicator size="small" color={colors.primary} />
+              )}
             </View>
 
+            {error && (
+              <Text style={[styles.errorText, { color: colors.error }]}>
+                {error}
+              </Text>
+            )}
+
             <FlatList
-              data={searchResults}
-              keyExtractor={(item) => item}
+              data={schools}
+              keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[styles.schoolItem, { borderBottomColor: colors.border }]}
                   onPress={() => handleSelect(item)}
                 >
-                  <Text style={{ color: colors.text.primary }}>{item}</Text>
+                  <View>
+                    <Text style={[styles.schoolName, { color: colors.text.primary }]}>
+                      {item.name}
+                    </Text>
+                    <Text style={[styles.schoolAddress, { color: colors.text.secondary }]}>
+                      {item.location}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               )}
               style={styles.schoolList}
@@ -225,5 +232,18 @@ const styles = StyleSheet.create({
   schoolItem: {
     paddingVertical: 16,
     borderBottomWidth: 1,
+  },
+  errorText: {
+    textAlign: 'center',
+    marginVertical: 8,
+    fontSize: 14,
+  },
+  schoolName: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  schoolAddress: {
+    fontSize: 14,
   },
 }); 
