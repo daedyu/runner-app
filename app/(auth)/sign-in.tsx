@@ -13,7 +13,10 @@ export default function SignInScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
-  const { signIn, isLoading, error } = useSignIn();
+  const {
+    signIn,
+    loading,
+  } = useSignIn();
 
   const handleSignIn = async () => {
     try {
@@ -84,14 +87,14 @@ export default function SignInScreen() {
                 styles.signInButton,
                 { 
                   backgroundColor: colors.primary,
-                  opacity: isLoading ? 0.7 : 1
+                  opacity: loading ? 0.7 : 1
                 }
               ]}
               onPress={handleSignIn}
-              disabled={isLoading}
+              disabled={loading}
             >
               <Text style={[styles.signInButtonText, { color: colors.text.inverse }]}>
-                {isLoading ? '로그인 중...' : '로그인'}
+                {loading ? '로그인 중...' : '로그인'}
               </Text>
             </TouchableOpacity>
 

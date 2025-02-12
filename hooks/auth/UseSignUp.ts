@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { signUp as signUpApi } from '@/repository/auth.repository';
+import { signUp as signUpApi } from '@/repository/auth/auth.repository';
 
 interface SignUpData {
   email: string;
