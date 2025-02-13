@@ -8,6 +8,7 @@ import { Stack, router } from 'expo-router';
 import { TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import SchoolSearchModal from "@/components/SchoolSearchModal";
+import {SchoolResponse} from "@/types/school/school.types";
 
 export default function EditProfileScreen() {
   const colorScheme = useColorScheme();
@@ -16,12 +17,18 @@ export default function EditProfileScreen() {
   const [originalValues] = useState({
     name: '김민규',
     grade: '2',
-    school: '대구소프트웨어마이스터고등학교'
+    school: {
+      id: 1,
+      name: '대구소프트웨어마이스터고등학교',
+      location: '',
+      website: '',
+      grade: 3
+    }
   });
   
   const [name, setName] = useState(originalValues.name);
   const [grade, setGrade] = useState(originalValues.grade);
-  const [school, setSchool] = useState(originalValues.school);
+  const [school, setSchool] = useState<SchoolResponse>(originalValues.school);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false);
@@ -43,7 +50,7 @@ export default function EditProfileScreen() {
       alert('새 비밀번호를 입력해주세요.');
       return;
     }
-    
+
     // TODO: 서버에 변경사항 저장 로직 구현
     router.back();
   };
@@ -71,7 +78,7 @@ export default function EditProfileScreen() {
         <TouchableOpacity
           style={[
             styles.input,
-            { 
+            {
               borderColor: colors.border,
               justifyContent: 'center'
             }
@@ -152,7 +159,7 @@ export default function EditProfileScreen() {
               onPress={() => setIsSchoolModalVisible(true)}
             >
               <Text style={{ color: colors.text.primary }}>
-                {school || '학교를 선택하세요'}
+                {school.name || '학교를 선택하세요'}
               </Text>
             </TouchableOpacity>
           </View>

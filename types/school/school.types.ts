@@ -5,7 +5,7 @@ export interface SchoolsResponse extends Response {
 }
 
 export interface SchoolResponse {
-  id: string;
+  id: number;
   name: string;
   location: string;
   website: string;

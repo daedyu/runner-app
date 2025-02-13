@@ -1,23 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Modal, 
-  TouchableOpacity, 
-  TextInput,
-  FlatList,
-  Dimensions,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Animated,
-  ActivityIndicator
-} from 'react-native';
+import { StyleSheet, View, Modal, TouchableOpacity, TextInput, FlatList, Dimensions, TouchableWithoutFeedback, Keyboard, Animated, ActivityIndicator } from 'react-native';
 import { Text } from '@/components/Themed';
 import { getThemeColors } from '@/assets/theme/colors';
 import { useColorScheme } from 'react-native';
 import { Search, X } from 'lucide-react-native';
 import useSchoolSearch from '@/hooks/school/UseSchoolSearch';
 import { SchoolResponse } from '@/types/school/school.types';
+import School from "@/components/school/School";
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -41,7 +30,6 @@ export default function SchoolSearchModal({
   const { 
     schools,
     loading,
-    error,
     searchSchools
   } = useSchoolSearch();
 
@@ -145,30 +133,24 @@ export default function SchoolSearchModal({
                 <ActivityIndicator size="small" color={colors.primary} />
               )}
             </View>
-
-            {error && (
-              <Text style={[styles.errorText, { color: colors.error }]}>
-                {error}
-              </Text>
-            )}
-
             <FlatList
               data={schools}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => String(item.id)}
               renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[styles.schoolItem, { borderBottomColor: colors.border }]}
-                  onPress={() => handleSelect(item)}
-                >
-                  <View>
-                    <Text style={[styles.schoolName, { color: colors.text.primary }]}>
-                      {item.name}
-                    </Text>
-                    <Text style={[styles.schoolAddress, { color: colors.text.secondary }]}>
-                      {item.location}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                <School colors={colors} onPress={() => handleSelect(item)} item={item}/>
+                // <TouchableOpacity
+                //   style={[styles.schoolItem, { borderBottomColor: colors.border }]}
+                //   onPress={() => handleSelect(item)}
+                // >
+                //   <View>
+                //     <Text style={[styles.schoolName, { color: colors.text.primary }]}>
+                //       {item.name}
+                //     </Text>
+                //     <Text style={[styles.schoolAddress, { color: colors.text.secondary }]}>
+                //       {item.location}
+                //     </Text>
+                //   </View>
+                // </TouchableOpacity>
               )}
               style={styles.schoolList}
             />
@@ -229,21 +211,9 @@ const styles = StyleSheet.create({
   schoolList: {
     flex: 1,
   },
-  schoolItem: {
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-  },
   errorText: {
     textAlign: 'center',
     marginVertical: 8,
-    fontSize: 14,
-  },
-  schoolName: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 4,
-  },
-  schoolAddress: {
     fontSize: 14,
   },
 }); 

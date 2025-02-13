@@ -8,7 +8,6 @@ export default function useSchoolSearch() {
   const [filteredSchools, setFilteredSchools] = useState<SchoolResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // 초기 데이터 로드
   const fetchAllSchools = useCallback(async () => {
     try {
       setLoading(true);
@@ -25,12 +24,10 @@ export default function useSchoolSearch() {
     }
   }, []);
 
-  // 컴포넌트 마운트 시 전체 데이터 로드
   useEffect(() => {
     fetchAllSchools();
   }, [fetchAllSchools]);
 
-  // 검색어에 따른 필터링
   const searchSchools = useCallback((keyword: string) => {
     if (!keyword.trim()) {
       setFilteredSchools(allSchools);
