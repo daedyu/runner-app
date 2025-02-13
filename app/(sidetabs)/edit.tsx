@@ -9,6 +9,7 @@ import { TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import SchoolSearchModal from "@/components/SchoolSearchModal";
 import {SchoolResponse} from "@/types/school/school.types";
+import GradePicker from "@/components/school/GradePicker";
 
 export default function EditProfileScreen() {
   const colorScheme = useColorScheme();
@@ -16,7 +17,7 @@ export default function EditProfileScreen() {
 
   const [originalValues] = useState({
     name: '김민규',
-    grade: '2',
+    grade: 2,
     school: {
       id: 1,
       name: '대구소프트웨어마이스터고등학교',
@@ -32,6 +33,7 @@ export default function EditProfileScreen() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false);
+  const [isGradeModalVisible, setIsGradeModalVisible] = useState(false);
 
   const isChanged = name !== originalValues.name || 
                    grade !== originalValues.grade || 
@@ -50,73 +52,7 @@ export default function EditProfileScreen() {
       alert('새 비밀번호를 입력해주세요.');
       return;
     }
-
-    // TODO: 서버에 변경사항 저장 로직 구현
     router.back();
-  };
-
-  const showGradePicker = () => {
-    if (Platform.OS === 'ios') {
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          options: ['취소', '1학년', '2학년', '3학년', '4학년'],
-          cancelButtonIndex: 0,
-          title: '학년 선택',
-        },
-        (buttonIndex) => {
-          if (buttonIndex > 0) {
-            setGrade(buttonIndex.toString());
-          }
-        }
-      );
-    }
-  };
-
-  const renderGradePicker = () => {
-    if (Platform.OS === 'ios') {
-      return (
-        <TouchableOpacity
-          style={[
-            styles.input,
-            {
-              borderColor: colors.border,
-              justifyContent: 'center'
-            }
-          ]}
-          onPress={showGradePicker}
-        >
-          <Text style={{ color: colors.text.primary }}>{grade}학년</Text>
-        </TouchableOpacity>
-      );
-    }
-
-    return (
-      <View 
-        style={[
-          styles.input,
-          { 
-            padding: 0,
-            borderColor: colors.border
-          }
-        ]}
-      >
-        <Picker
-          selectedValue={grade}
-          onValueChange={(itemValue) => setGrade(itemValue)}
-          style={{ 
-            color: colors.text.primary,
-            height: 44,
-            width: '100%',
-          }}
-          dropdownIconColor={colors.text.primary}
-        >
-          <Picker.Item label="1학년" value="1" />
-          <Picker.Item label="2학년" value="2" />
-          <Picker.Item label="3학년" value="3" />
-          <Picker.Item label="4학년" value="4" />
-        </Picker>
-      </View>
-    );
   };
 
   return (
@@ -166,7 +102,17 @@ export default function EditProfileScreen() {
 
           <View style={styles.section}>
             <Text style={[styles.label, { color: colors.text.secondary }]}>학년</Text>
-            {renderGradePicker()}
+            <TouchableOpacity
+              style={[styles.input, {
+                borderColor: colors.border,
+                justifyContent: 'center'
+              }]}
+              onPress={() => setIsGradeModalVisible(true)}
+            >
+              <Text style={{ color: colors.text.primary }}>
+                {grade || '학년을 선택하세요'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -207,6 +153,13 @@ export default function EditProfileScreen() {
         isVisible={isSchoolModalVisible}
         onClose={() => setIsSchoolModalVisible(false)}
         onSelect={setSchool}
+      />
+      <GradePicker
+        isVisible={isGradeModalVisible}
+        onClose={() => setIsGradeModalVisible(false)}
+        onSelect={setGrade}
+        selectedGrade={grade}
+        maxGrade={school.grade}
       />
 
       <View style={styles.bottomContainer}>

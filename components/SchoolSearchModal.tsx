@@ -138,19 +138,6 @@ export default function SchoolSearchModal({
               keyExtractor={(item) => String(item.id)}
               renderItem={({ item }) => (
                 <School colors={colors} onPress={handleSelect} item={item}/>
-                // <TouchableOpacity
-                //   style={[styles.schoolItem, { borderBottomColor: colors.border }]}
-                //   onPress={() => handleSelect(item)}
-                // >
-                //   <View>
-                //     <Text style={[styles.schoolName, { color: colors.text.primary }]}>
-                //       {item.name}
-                //     </Text>
-                //     <Text style={[styles.schoolAddress, { color: colors.text.secondary }]}>
-                //       {item.location}
-                //     </Text>
-                //   </View>
-                // </TouchableOpacity>
               )}
               style={styles.schoolList}
             />
