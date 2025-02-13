@@ -14,7 +14,7 @@ export default function School(props: SchoolProps) {
   return (
     <TouchableOpacity
       style={[styles.schoolItem, { borderBottomColor: props.colors.border }]}
-      onPress={() => props.onPress}
+      onPress={() => props.onPress(props.item)}
     >
       <View>
         <Text style={[styles.schoolName, { color: props.colors.text.primary }]}>

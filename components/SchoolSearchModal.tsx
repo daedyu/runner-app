@@ -137,7 +137,7 @@ export default function SchoolSearchModal({
               data={schools}
               keyExtractor={(item) => String(item.id)}
               renderItem={({ item }) => (
-                <School colors={colors} onPress={() => handleSelect(item)} item={item}/>
+                <School colors={colors} onPress={handleSelect} item={item}/>
                 // <TouchableOpacity
                 //   style={[styles.schoolItem, { borderBottomColor: colors.border }]}
                 //   onPress={() => handleSelect(item)}
