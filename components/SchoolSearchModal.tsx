@@ -133,6 +133,7 @@ export default function SchoolSearchModal({
                 <ActivityIndicator size="small" color={colors.primary} />
               )}
             </View>
+            { schools.length === 0 && (<Text style={styles.errorText}>데이터 로드에 실패했습니다, 인터넷 연결을 확인해주세요</Text>)}
             <FlatList
               data={schools}
               keyExtractor={(item) => String(item.id)}

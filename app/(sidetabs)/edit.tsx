@@ -6,7 +6,6 @@ import { getThemeColors } from '@/assets/theme/colors';
 import SafeContainer from '@/components/common/SafeContainer';
 import { Stack, router } from 'expo-router';
 import { TextInput } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import SchoolSearchModal from "@/components/SchoolSearchModal";
 import {SchoolResponse} from "@/types/school/school.types";
 import GradePicker from "@/components/school/GradePicker";
