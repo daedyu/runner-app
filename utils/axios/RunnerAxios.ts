@@ -27,4 +27,4 @@ export const setAxiosAccessToken = (token: string) => {
   runnerAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 };
 
-runnerAxios.interceptors.request.use(requestHandler , (res) => res);
+runnerAxios.interceptors.request.use(requestHandler , (e) => Promise.reject(e));
