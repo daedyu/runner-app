@@ -3,6 +3,7 @@ import {ACCESS_TOKEN_KEY} from "@/constants/token/token.constants";
 import config from "@/config/config.json"
 import token from "@/utils/token/token";
 import requestHandler from "@/utils/axios/RequestHandler";
+import exceptionHandler from "@/utils/axios/ExceptionHandler";
 
 const createAxiosInstance = (config?: AxiosRequestConfig) => {
   const baseConfig: AxiosRequestConfig = {
@@ -23,8 +24,5 @@ export const runnerAxios = createAxiosInstance({
   },
 });
 
-export const setAxiosAccessToken = (token: string) => {
-  runnerAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-};
-
 runnerAxios.interceptors.request.use(requestHandler , (e) => Promise.reject(e));
+runnerAxios.interceptors.response.use((e) => Promise.reject(e), exceptionHandler);
