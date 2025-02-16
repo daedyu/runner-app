@@ -17,6 +17,7 @@ export default function EditProfileScreen() {
   const [originalValues] = useState({
     name: '김민규',
     grade: 2,
+    room: '2',
     school: {
       id: 1,
       name: '대구소프트웨어마이스터고등학교',
@@ -32,6 +33,7 @@ export default function EditProfileScreen() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false);
+  const [room, setRoom] = useState(originalValues.room);
   const [isGradeModalVisible, setIsGradeModalVisible] = useState(false);
 
   const isChanged = name !== originalValues.name || 
@@ -112,6 +114,21 @@ export default function EditProfileScreen() {
                 {grade || '학년을 선택하세요'}
               </Text>
             </TouchableOpacity>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={[styles.label, { color: colors.text.secondary }]}>반</Text>
+            <TextInput
+              keyboardType="numeric"
+              style={[styles.input, {
+                color: colors.text.primary,
+                borderColor: colors.border,
+              }]}
+              value={room}
+              onChangeText={setRoom}
+              placeholder="반을 입력하세요"
+              placeholderTextColor={colors.text.secondary}
+            />
           </View>
         </View>
 
