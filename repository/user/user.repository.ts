@@ -11,7 +11,7 @@ class UserRepository {
 
   public async updateUser() {
     const data  = runnerAxios.patch("/update");
-    
+    return data;
   }
 }
 
